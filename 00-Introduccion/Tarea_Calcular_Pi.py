@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 # x = (a - b) * np.random.random_sample((1, 2)) + a
 
 a = 1.0   #radius of the circle
-m = 8     #max exponent for number of points
+m = 8     #m-1 = max exponent for number of points
 PN = 0    #initialize the probability of a point being inside
 pi = 0    #initial value for pi 
     
