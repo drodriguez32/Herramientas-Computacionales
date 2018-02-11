@@ -38,10 +38,13 @@ min_agnos = 0
 
 if np.min(serie_pd_OBJ['AÑO']) >= np.min(serie_pd_REF['AÑO']):
     agno_min = np.min(serie_pd_OBJ['AÑO'])
-    min_agnos = np.max(serie_pd_OBJ['AÑO']) - np.min(serie_pd_OBJ['AÑO']) + 1
 else:
     agno_min = np.min(serie_pd_REF['AÑO'])
-    min_agnos = np.max(serie_pd_REF['AÑO']) - np.min(serie_pd_REF['AÑO']) + 1
+
+if np.max(serie_pd_OBJ['AÑO']) <= np.max(serie_pd_REF['AÑO']):
+    min_agnos = np.max(serie_pd_OBJ['AÑO']) - agno_min +1
+else:
+    min_agnos = np.max(serie_pd_REF['AÑO']) - agno_min +1
     
 # ---------------------------------
 
@@ -201,8 +204,8 @@ def mbe(obj,cor):
 # ----------------------------------
     
 obj_cor = mcp(serie_pd_OBJ,serie_pd_REF,serie_pd_COR,
-              int(input("Indique el año para el cual desea hacer el análisis: ")),
-              int(input("Indique el número de años para los que desea hacer el análisis: ")),
+              int(input("Indique el año para el cual desea hacer el análisis ({} - {}): ".format(agno_min,(agno_min+min_agnos-1)))),
+              int(input("Indique el número de años para los que desea hacer el análisis (max {}): ".format(min_agnos))),
               int(input("Indique el mes inicial para el cual desea hacer el análisis: ")),
               int(input("Indique el número de meses para los que desea hacer el análisis: "))
               )
