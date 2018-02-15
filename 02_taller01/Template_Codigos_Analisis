@@ -1,0 +1,87 @@
+# Importar datos CSV
+cal_OBJ, cal_REF, cal_EXTRA, cal_min_agno, cal_agnos = extract_data('Cali')
+
+print("Primer año: ", bar_min_agno)
+print("Último año: ", bar_min_agno+bar_agnos-1)
+
+------------------
+
+# Aplicar corrección MCP
+cal1_COR = mcp(cal_OBJ,cal_REF,cal_EXTRA,2010)
+
+---------------
+
+# Preparar datos
+cal1_IDEAM, cal1_NREL, cal1_NEW = prepare_data(cal_OBJ,cal_REF,cal1_COR,cal_min_agno,cal_agnos)
+
+--------------
+
+# Cortar serie corregida para errores
+cal1_COR_cut = cut_series(cal1_COR,cal_min_agno,cal_agnos)
+cal1_NREL_cut = cut_series(cal_REF,cal_min_agno,cal_agnos)
+
+--------------
+
+# Gaficar datos
+graph_data('Cali - 2010',cal1_IDEAM,cal1_NREL,cal1_NEW)
+
+--------------
+
+# Calcular Errores - NREL
+print('Errores NREL')
+cal1_rmsen_nrel = rmsen(cal_OBJ,cal1_NREL_cut)
+cal1_mbe_nrel = mbe(cal_OBJ,cal1_NREL_cut)
+cal1_stat_nrel, cal1_p_nrel = ksi_err(cal1_IDEAM,cal1_NREL)
+
+print('\n')
+
+# Calcular Errores - NEW
+print('Errores NEW')
+cal1_rmsen_new = rmsen(cal_OBJ,cal1_COR_cut)
+cal1_mbe_new = mbe(cal_OBJ,cal1_COR_cut)
+cal1_stat_new, cal1_p_new = ksi_err(cal1_IDEAM,cal1_NEW)
+
+--------------------
+
+# Calcular ENFICC
+print('- IDEAM')
+cal1_enficc_IDEAM = enficc(cal1_IDEAM)
+print('- NREL')
+cal1_enficc_NREL = enficc(cal1_NREL)
+print('- NEW')
+cal1_enficc_NEW = enficc(cal1_NEW)
+
+-------------------- OTRO -------------------
+
+# Aplicar corrección MCP
+cal2_COR = mcp(cal_OBJ,cal_REF,cal_EXTRA,2012)
+
+---------------------
+
+# Preparar datos
+cal2_IDEAM, cal2_NREL, cal2_NEW = prepare_data(cal_OBJ,cal_REF,cal2_COR,cal_min_agno,cal_agnos)
+
+----------------------
+
+# Cortar serie corregida para errores
+cal2_COR_cut = cut_series(cal2_COR,cal_min_agno,cal_agnos)
+cal2_NREL_cut = cut_series(cal_REF,cal_min_agno,cal_agnos)
+
+---------------------
+
+# Gaficar datos
+graph_data('Cali - 2012',cal2_IDEAM,cal2_NREL,cal2_NEW)
+
+---------------------
+
+# Calcular Errores - NEW
+print('Errores NEW')
+cal2_rmsen_new = rmsen(cal_OBJ,cal2_COR_cut)
+cal2_mbe_new = mbe(cal_OBJ,cal2_COR_cut)
+cal2_stat_new, cal2_p_new = ksi_err(cal2_IDEAM,cal2_NEW)
+
+-------------------
+
+# Calcular ENFICC
+print('- NEW')
+cal2_enficc_NEW = enficc(cal2_NEW)
