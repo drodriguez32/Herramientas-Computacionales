@@ -210,21 +210,6 @@ def mbe(obj,cor):
     return error
 
 # ----------------------------------
-'''    
-obj_cor = mcp(serie_pd_OBJ,serie_pd_REF,serie_pd_COR,
-              int(input("Indique el año para el cual desea hacer el análisis ({} - {}): ".format(agno_min,(agno_min+min_agnos-1)))),
-              int(input("Indique el número de años para los que desea hacer el análisis (max {}): ".format(min_agnos))),
-              int(input("Indique el mes inicial para el cual desea hacer el análisis: ")),
-              int(input("Indique el número de meses para los que desea hacer el análisis: "))
-              )
-'''
-
-obj_cor = mcp(serie_pd_OBJ,serie_pd_REF,serie_pd_COR,
-              int(input("Indique el año para el cual desea hacer el análisis ({} - {}): ".format(agno_min,(agno_min+min_agnos-1))).strip()),
-              1,
-              1,
-              12
-              )
 
 # Crear las tres series de promedio díario mensual
 
@@ -232,21 +217,11 @@ obj_cor = mcp(serie_pd_OBJ,serie_pd_REF,serie_pd_COR,
 ghi_dia_mes_OBJ = ghi_diario_mensual(serie_pd_OBJ)
 datos_IDEAM = sorted(ghi_dia_mes_OBJ["GHIdiario"])
 
-# NREL
-nrel_cort = cut_series(serie_pd_REF,agno_min,min_agnos)
-ghi_dia_mes_REF = ghi_diario_mensual(nrel_cort)
-datos_NREL = sorted(ghi_dia_mes_REF["GHIdiario"])
-
-# CORREGIDO
-nueva_cort = cut_series(obj_cor,agno_min,min_agnos)
-ghi_dia_mes_NEW = ghi_diario_mensual(nueva_cort)
-datos_NEW = sorted(ghi_dia_mes_NEW["GHIdiario"])
-
 # ----------------------------------------------
 
 # GRAFICAR
 
-
+'''
 pylab.xlabel("Datos")
 pylab.ylabel("Energía/Energía Base IDEAM")
 pylab.title(ciudad)
@@ -256,17 +231,18 @@ pylab.plot(numdatos,datos_NREL/datos_IDEAM[0],'-b', label='NREL')
 pylab.plot(numdatos,datos_NEW/datos_IDEAM[0],'-r', label='NEW')
 pylab.legend(loc='upper left')
 #pylab.savefig(os.path.join(output_dir,ciudad+'.png'), dpi=600)
+'''
 
+pylab.xlabel("Meses")
+pylab.ylabel("Energía")
+pylab.title(ciudad)
+numdatos = range(len(datos_IDEAM))
+pylab.plot(numdatos,ghi_dia_mes_OBJ['GHIdiario'],'-k', label='IDEAM')
+#pylab.plot(numdatos,ghi_dia_mes_REF['GHIdiario'],'-b', label='NREL')
+#pylab.plot(numdatos,ghi_dia_mes_NEW['GHIdiario'],'-r', label='NEW')
+pylab.legend(loc='upper left')
+#pylab.savefig(os.path.join(output_dir,ciudad+'.png'), dpi=600)
 
 # ---------------------------------------------
 
-# CALCULAR ERRORES
-error_rmsen = rmsen(serie_pd_OBJ,nueva_cort)
-error_mbe = mbe(serie_pd_OBJ,nueva_cort)
-s_nrel, p_nrel = stats.ks_2samp(datos_IDEAM,datos_NREL) 
-s_new, p_new = stats.ks_2samp(datos_IDEAM,datos_NEW) 
-
-print("Error RMSEn = {0:.3f}%".format(error_rmsen*100))
-print("Error MBE = {0:.3f}%".format(error_mbe*100))
-print("El P-Value NREL = {}".format(p_nrel))
-print("El P-Value NEW = {}".format(p_new))
+print(agno_min)
