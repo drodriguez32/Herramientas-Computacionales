@@ -1,0 +1,71 @@
+# Set Initializer with seed
+rand_seed = np.random.seed(1)
+init = RandomUniform(seed=rand_seed)
+
+# design network
+model = Sequential()
+model.add(Dense(256, activation='relu', input_shape=(6,), kernel_initializer=init))
+model.add(Dropout(0.2))
+model.add(Dense(128, activation='relu', kernel_initializer=init))
+model.add(Dropout(0.15))
+#model.add(Dense(256, activation='relu'))
+#model.add(Dropout(0.2))
+#model.add(Dense(250, activation='relu'))
+#model.add(Dropout(0.2))
+model.add(Dense(1, activation='sigmoid'))
+model.summary()
+
+model.compile(loss=losses.mean_squared_error, optimizer='adadelta', metrics = ['accuracy'])
+
+# Epochs & Mini-Batches
+epochs = 50
+batch_size = 10
+
+---------------
+
+# fit network
+history = model.fit(train_x, train_y, epochs=epochs, batch_size=batch_size, validation_data=(val_x, val_y), verbose=0, shuffle=True)
+
+# Validate model
+score_val = model.evaluate(val_x,val_y,verbose=0)
+
+# plot history
+plt.plot(history.history['loss'], label='Train')
+plt.plot(history.history['val_loss'], label='Validate')
+plt.legend()
+plt.show()
+
+# Print validation
+print('Validation Loss = ', score_val[0])
+print('Validation Accuracy = ', score_val[1])
+
+---------------
+
+# make a prediction
+yhat = model.predict(test_x)
+score_yhat = model.evaluate(test_x,test_y,verbose=0)
+
+# Invert normalization
+inv_yhat = scaler1.inverse_transform(yhat)
+
+# Create vector for x axis
+t = range(len(inv_yhat))
+
+# Calculate RMSE
+rmse = np.sqrt(mean_squared_error(dataset_new[-len(inv_yhat):], inv_yhat))
+print('Test RMSE: %.3f' % rmse)
+
+# Plot Prediction and Real
+plt.plot(t,inv_yhat,label='Prediction')
+plt.plot(t,dataset_new[-len(inv_yhat):],label='Original')
+plt.legend(loc='best')
+
+# Print Test Loss/Accuracy
+print('Test Loss = ', score_yhat[0])
+print('Test Accuracy = ', score_yhat[1])
+
+----------
+
+# Val Loss = 0.00022744357542251237
+# Test Loss = 9.539992024656385e-5
+# Test RMSE = 12.265
